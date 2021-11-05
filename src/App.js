@@ -14,7 +14,7 @@ function App() {
   // Main function
   const runCoco = async () => {
     // 3. TODO - Load network 
-    const net = await tf.loadGraphModel('https://livelong.s3.au-syd.cloud-object-storage.appdomain.cloud/model.json')
+    const net = await tf.loadGraphModel('https://foodbuster.s3.jp-tok.cloud-object-storage.appdomain.cloud/model.json')
     
     // Loop and detect hands
     setInterval(() => {
@@ -49,16 +49,24 @@ function App() {
       const expanded = casted.expandDims(0)
       const obj = await net.executeAsync(expanded)
       
-      const boxes = await obj[4].array()
-      const classes = await obj[5].array()
-      const scores = await obj[6].array()
+      // console.log(await obj[0].array())//box
+      // console.log(await obj[1].array())
+      // console.log(await obj[2].array())
+      // console.log(await obj[3].array())
+      // console.log(await obj[4].array())
+      // console.log(await obj[5].array())// non post process box
+      // console.log(await obj[6].array())
+      console.log(await obj[7].array())
+      const boxes = await obj[0].array()
+      const classes = await obj[7].array()
+      const scores = await obj[2].array()
     
       // Draw mesh
       const ctx = canvasRef.current.getContext("2d");
 
       // 5. TODO - Update drawing utility
       // drawSomething(obj, ctx)  
-      requestAnimationFrame(()=>{drawRect(boxes[0], classes[0], scores[0], 0.9, videoWidth, videoHeight, ctx)}); 
+      requestAnimationFrame(()=>{drawRect(boxes[0], classes[0], scores[0], 0.3, videoWidth, videoHeight, ctx)}); 
 
       tf.dispose(img)
       tf.dispose(resized)
